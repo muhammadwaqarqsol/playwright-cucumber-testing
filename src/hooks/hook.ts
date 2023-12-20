@@ -1,15 +1,48 @@
-import { BeforeAll, AfterAll, Before, After } from "@cucumber/cucumber";
+import {
+  BeforeAll,
+  AfterAll,
+  Before,
+  After,
+  BeforeStep,
+  AfterStep,
+  Status,
+} from "@cucumber/cucumber";
 import { pageFixture } from "./pageFixture";
-import { Browser, Page, chromium } from "@playwright/test";
+import { Browser, BrowserContext, Page, chromium } from "@playwright/test";
 let browser: Browser;
-let page: Page;
-Before(async function () {
+let context: BrowserContext;
+BeforeAll(async function () {
   browser = await chromium.launch({ headless: false });
-  page = await browser.newPage();
-  pageFixture.page = page;
 });
 
-After(async function () {
-  await page.close();
+Before(async function () {
+  context = await browser.newContext();
+  const page = await context.newPage();
+  pageFixture.page = page;
+});
+AfterStep(async function ({ pickle, result }) {
+  const img = await pageFixture.page.screenshot({
+    path: `./test-result/screenshots/${pickle.name}.png`,
+    type: "png",
+  });
+  await this.attach(img, "image/png");
+});
+
+After(async function ({ pickle, result }) {
+  console.log(result);
+  if (result?.status == Status.FAILED) {
+    const img = await pageFixture.page.screenshot({
+      path: `./test-result/screenshots/${pickle.name}.png`,
+      type: "png",
+    });
+    await this.attach(img, "image/png");
+  }
+  //screenshot
+
+  await pageFixture.page.close();
+  await context.close();
+});
+
+AfterAll(async function () {
   await browser.close();
 });
