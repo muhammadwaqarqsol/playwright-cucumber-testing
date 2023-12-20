@@ -6,7 +6,7 @@
     "paths": ["src/test/feature/addToCard.feature"],
     "publishQuiet": true,
     "dryRun": false,
-    "require": ["src/test/steps/*.ts"],
+    "require": ["src/test/steps/*.ts", "src/hooks/hook.ts"],
     "requireModule": ["ts-node/register"]
   }
 }
