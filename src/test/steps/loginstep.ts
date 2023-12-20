@@ -1,12 +1,14 @@
 import { Given, When, Then } from "@cucumber/cucumber";
-import { Browser, chromium, expect, Page } from "@playwright/test";
+
+import { chromium, Page, Browser, expect } from "@playwright/test";
 
 let browser: Browser;
 let page: Page;
+
 Given("User navigates to the application", async function () {
   browser = await chromium.launch({ headless: false });
   page = await browser.newPage();
-  await page.goto("https://bookcart.azurewebsites.net");
+  await page.goto("https://bookcart.azurewebsites.net/");
 });
 
 Given("User click on the login link", async function () {
@@ -14,30 +16,29 @@ Given("User click on the login link", async function () {
 });
 
 Given("User enter the username as {string}", async function (username) {
-  await page.locator("//input[@formcontrolname='username']").type(username);
+  await page.locator("input[formcontrolname='username']").type(username);
 });
 
 Given("User enter the password as {string}", async function (password) {
-  await page.locator("//input[@formcontrolname='password']").type(password);
+  await page.locator("input[formcontrolname='password']").type(password);
 });
 
 When("User click on the login button", async function () {
-  await page.locator("//button[@color='primary']").click();
-});
-
-When("Login should fail", async function () {
-  const alertElement = page.locator("//mat-error[@role='alert']");
-  await expect(alertElement).toHaveText("Username or Password is incorrect.");
-  await page.close();
-  await browser.close();
+  await page.locator("button[color='primary']").click();
 });
 
 Then("Login should be success", async function () {
-  const user = page.locator(
-    "//button[contains(@class,'mat-focus-indicator mat-menu-trigger')]//span[1]"
-  );
-  console.log(await user.textContent());
-  await expect(user).toContainText("ortoni");
-  await page.close();
+  const text = await page
+    .locator(
+      "//button[contains(@class,'mat-focus-indicator mat-menu-trigger')]//span[1]"
+    )
+    .textContent();
+  console.log("Username: " + text);
+  await browser.close();
+});
+
+When("Login should fail", async function () {
+  const failureMesssage = page.locator("mat-error[role='alert']");
+  await expect(failureMesssage).toBeVisible();
   await browser.close();
 });

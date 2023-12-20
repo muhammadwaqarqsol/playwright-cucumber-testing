@@ -3,7 +3,7 @@
     "formatOptions": {
       "snippetInterface": "async-await"
     },
-    "paths": ["src/test/feature/login.feature"],
+    "paths": ["src/test/feature/addToCard.feature"],
     "publishQuiet": true,
     "dryRun": false,
     "require": ["src/test/steps/*.ts"],
