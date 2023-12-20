@@ -22,7 +22,7 @@ Before(async function () {
 });
 AfterStep(async function ({ pickle, result }) {
   const img = await pageFixture.page.screenshot({
-    path: `./test-result/screenshots/${pickle.name}.png`,
+    path: `./test-result/screenshots/`,
     type: "png",
   });
   await this.attach(img, "image/png");
