@@ -3,12 +3,10 @@
     "formatOptions": {
       "snippetInterface": "async-await"
     },
-    "paths": ["src/test/feature/"],
-    "publish-quiet": true,
-    "dryRun": true,
+    "paths": ["src/test/feature/login.feature"],
+    "publishQuiet": true,
+    "dryRun": false,
     "require": ["src/test/steps/*.ts"],
-    "requireModule":[
-      "ts-node/register"
-    ]
+    "requireModule": ["ts-node/register"]
   }
 }
