@@ -4,6 +4,7 @@ import { pageFixture } from "../../hooks/pageFixture";
 setDefaultTimeout(60 * 1000 * 2);
 
 Given("user search for a {string}", async function (book) {
+  pageFixture.logger.info("Searching for a book" + book);
   await pageFixture.page.locator("input[type='search']").type(book);
   await pageFixture.page.waitForTimeout(3000);
   await pageFixture.page.locator("mat-option[role='option'] span").click();

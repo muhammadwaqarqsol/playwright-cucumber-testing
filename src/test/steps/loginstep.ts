@@ -6,6 +6,7 @@ import { pageFixture } from "../../hooks/pageFixture";
 
 Given("User navigates to the application", async function () {
   await pageFixture.page.goto(process.env.BASEURL);
+  pageFixture.logger.info("Navigated to the application");
 });
 
 Given("User click on the login link", async function () {
@@ -27,6 +28,7 @@ Given("User enter the password as {string}", async function (password) {
 When("User click on the login button", async function () {
   await pageFixture.page.locator("button[color='primary']").click();
   await pageFixture.page.waitForLoadState();
+  pageFixture.logger.info("waiting for 3 seconds");
   await pageFixture.page.waitForTimeout(3000);
 });
 
@@ -37,6 +39,7 @@ Then("Login should be success", async function () {
     )
     .textContent();
   console.log("Username: " + text);
+  pageFixture.logger.info("username: " + text);
 });
 
 When("Login should fail", async function () {
