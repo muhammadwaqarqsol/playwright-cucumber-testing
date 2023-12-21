@@ -1,7 +1,7 @@
 import { Given, When, Then, setDefaultTimeout } from "@cucumber/cucumber";
 import { expect } from "@playwright/test";
 import { pageFixture } from "../../hooks/pageFixture";
-setDefaultTimeout(60 * 1000 * 2);
+setDefaultTimeout(30 * 1000 * 2);
 
 Given("user search for a {string}", async function (book) {
   pageFixture.logger.info("Searching for a book" + book);

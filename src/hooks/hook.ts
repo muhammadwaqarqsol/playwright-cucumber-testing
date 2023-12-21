@@ -22,13 +22,39 @@ BeforeAll(async function () {
   browser = await invokeBrowser();
 });
 
-Before(async function ({ pickle }) {
+Before({ tags: "@auth" }, async function ({ pickle }) {
   const scenarioName = pickle.name + pickle.id;
   context = await browser.newContext({
     storageState: getStorageState(pickle.name),
     recordVideo: {
       dir: "test-result/videos",
     },
+  });
+  await context.tracing.start({
+    name: scenarioName,
+    title: pickle.name,
+    sources: true,
+    screenshots: true,
+    snapshots: true,
+  });
+  const page = await context.newPage();
+  pageFixture.page = page;
+  pageFixture.logger = createLogger(options(scenarioName));
+});
+//it will trigger for other scenarios without auth tag
+Before({ tags: "not @auth" }, async function ({ pickle }) {
+  const scenarioName = pickle.name + pickle.id;
+  context = await browser.newContext({
+    recordVideo: {
+      dir: "test-result/videos",
+    },
+  });
+  await context.tracing.start({
+    name: scenarioName,
+    title: pickle.name,
+    sources: true,
+    screenshots: true,
+    snapshots: true,
   });
   const page = await context.newPage();
   pageFixture.page = page;
@@ -45,9 +71,9 @@ AfterStep(async function ({ pickle, result }) {
 });
 
 After(async function ({ pickle, result }) {
-  console.log(result);
   let videoPath: string;
   let img: Buffer;
+  const path = `./test-results/trace/${pickle.id}.zip`;
   if (result?.status == Status.PASSED) {
     img = await pageFixture.page.screenshot({
       path: `./test-result/screenshots/${pickle.name}.png`,
@@ -55,12 +81,14 @@ After(async function ({ pickle, result }) {
     });
     videoPath = await pageFixture.page.video().path();
   }
-
+  await context.tracing.stop({ path: path });
   await pageFixture.page.close();
   await context.close();
   if (result?.status == Status.PASSED) {
     await this.attach(img, "image/png");
     await this.attach(fs.readFileSync(videoPath), "video/webm");
+    const traceFileLink = `<a href="https://trace.playwright.dev/">open ${path}</a>`;
+    await this.attach(`Trace File: ${traceFileLink}`, "text/html");
   }
 });
 AfterAll(async function () {
