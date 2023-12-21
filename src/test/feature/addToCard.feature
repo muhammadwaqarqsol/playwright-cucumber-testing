@@ -4,7 +4,7 @@ Feature: Prodcuts test
     Given User navigates to the application
     And User click on the login link
 
-  Scenario Outline: Add to cart
+  Scenario Outline: Authenticated Users - Add to cart
     And User enter the username as "<username>"
     And User enter the password as "<password>"
     And User click on the login button
