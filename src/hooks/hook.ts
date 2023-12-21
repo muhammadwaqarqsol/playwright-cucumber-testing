@@ -14,6 +14,9 @@ import { createLogger } from "winston";
 import { options } from "../helper/utils/logger";
 let browser: Browser;
 let context: BrowserContext;
+
+const fs = require("fs-extra");
+
 BeforeAll(async function () {
   getEnv();
   browser = await invokeBrowser();
